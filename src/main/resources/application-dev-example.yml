@@ -1,0 +1,94 @@
+# 开发环境配置示例
+# 请复制此文件为 application-dev.yml 并填入实际开发环境配置
+
+# 数据库配置
+spring:
+  # MySQL数据库配置
+  datasource:
+    url: jdbc:mysql://localhost:3306/order_system?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=utf-8&allowPublicKeyRetrieval=true
+    username: # 开发数据库用户名
+    password: # 开发数据库密码
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  
+  # JPA配置
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  
+  # Redis配置
+  data:
+    redis:
+      host: localhost # Redis服务器地址
+      port: 6379 # Redis端口
+      database: 0 # 使用的数据库编号
+      connect-timeout: 5000 # 连接超时时间（毫秒）
+      timeout: 3000 # 操作超时时间（毫秒）
+      lettuce:
+        pool:
+          max-active: 8 # 最大连接数
+          max-idle: 8 # 最大空闲连接数
+          min-idle: 0 # 最小空闲连接数
+          max-wait: -1ms # 最大等待时间，负数表示不限制
+      repositories:
+        enabled: false # 是否启用Redis Repository
+
+  # 邮件配置
+  mail:
+    host: # SMTP服务器地址
+    port: 465 # SMTP端口
+    username: # 邮箱用户名
+    password: # 邮箱密码或授权码
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true # 是否启用SSL
+          auth: true # 是否需要认证
+          starttls:
+            enable: true # 是否启用STARTTLS
+            required: true # 是否要求STARTTLS
+
+# 验证码配置
+verification:
+  code:
+    expiration: 600 # 验证码过期时间，单位：秒
+    cooldown: 120 # 验证码冷却时间，单位：秒
+
+# 限流配置
+rate-limit:
+  verification-code:
+    capacity: 3 # 每个用户每分钟最多请求3次验证码
+    period: 300 # 限流周期，单位：秒
+  order:
+    capacity: 10 # 每个用户每分钟最多请求10次订单相关操作
+    period: 3600 # 限流周期，单位：秒
+
+# 前端URL配置
+application:
+  frontend-url: http://localhost:3000 # 前端应用URL
+  
+# JWT配置
+jwt:
+  secret: # JWT密钥，至少64字节长，建议使用随机生成的Base64字符串
+  expiration: 86400000 # Token有效期，默认1天，单位：毫秒
+
+# SpringDoc配置
+springdoc:
+  packages-to-scan: com.yiyunnetwork.order.controller
+  api-docs:
+    enabled: true
+    path: /api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    # 启用Swagger UI中的"Try it out"功能
+    try-it-out-enabled: true
+    # 使用新设置的token默认持续整个会话
+    persist-authorization: true
+    # 展开所有操作和标签
+    doc-expansion: none
