@@ -36,6 +36,7 @@ public class Product implements Serializable {
     private BigDecimal price;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean enabled = true;
 
     @Column

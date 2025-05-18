@@ -33,10 +33,12 @@ public class ProductDTO {
     @Positive(message = "商品价格必须大于0")
     private BigDecimal price;
     
+    @Builder.Default
     private Boolean enabled = true;
     
     private String imageUrl;
     
     @Valid
+    @Builder.Default
     private List<ProductFieldDTO> fields = new ArrayList<>();
 } 

@@ -28,6 +28,7 @@ public class ProductFieldDTO {
     @NotNull(message = "字段类型不能为空")
     private FieldType fieldType;
     
+    @Builder.Default
     private Boolean required = false;
     
     @Size(max = 500, message = "验证规则长度不能超过500个字符")
@@ -46,5 +47,6 @@ public class ProductFieldDTO {
     @Size(max = 5000, message = "选项值长度不能超过5000个字符")
     private String options;
     
+    @Builder.Default
     private Integer displayOrder = 0;
 } 

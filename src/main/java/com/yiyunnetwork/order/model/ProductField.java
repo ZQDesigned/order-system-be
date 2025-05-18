@@ -40,6 +40,7 @@ public class ProductField implements Serializable {
     private FieldType fieldType;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean required = false;
 
     @Column(length = 500)
@@ -55,5 +56,6 @@ public class ProductField implements Serializable {
     private String options;
 
     @Column(nullable = false)
+    @Builder.Default
     private Integer displayOrder = 0;
 } 

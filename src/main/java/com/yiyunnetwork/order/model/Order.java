@@ -72,9 +72,11 @@ public class Order implements Serializable {
     private String remark;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<OrderField> fields = new ArrayList<>();
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<OrderLog> logs = new ArrayList<>();
 
     @PrePersist

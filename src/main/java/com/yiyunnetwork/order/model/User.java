@@ -43,6 +43,7 @@ public class User implements Serializable {
     private String phone;
 
     @Column
+    @Builder.Default
     private Boolean enabled = true;
 
     @Column
@@ -57,6 +58,7 @@ public class User implements Serializable {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
+    @Builder.Default
     private List<Role> roles = new ArrayList<>();
 
     @PrePersist
