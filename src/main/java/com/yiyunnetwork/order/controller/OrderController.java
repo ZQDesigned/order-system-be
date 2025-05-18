@@ -42,7 +42,7 @@ public class OrderController {
     private final VerificationCodeService verificationCodeService;
     private final OrderUtils orderUtils;
 
-    @Operation(summary = "创建订单", description = "客户创建新订单")
+    @Operation(summary = "创建订单", description = "客户创建新订单，可以选择性地指定代理ID")
     @PostMapping("/public")
     public ApiResult<OrderResponseDTO> createOrder(@Valid @RequestBody OrderCreateDTO orderCreateDTO) {
         try {

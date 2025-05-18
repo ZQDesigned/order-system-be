@@ -17,6 +17,7 @@ import com.yiyunnetwork.order.repository.ProductFieldRepository;
 import com.yiyunnetwork.order.repository.ProductRepository;
 import com.yiyunnetwork.order.service.EmailService;
 import com.yiyunnetwork.order.service.OrderService;
+import com.yiyunnetwork.order.service.UserService;
 import com.yiyunnetwork.order.util.OrderUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +46,7 @@ public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
     private final ProductFieldRepository productFieldRepository;
     private final EmailService emailService;
+    private final UserService userService;
     @Qualifier("taskExecutor")
     private final TaskExecutor taskExecutor;
     private final OrderUtils orderUtils;
@@ -71,6 +73,25 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         
+        // 如果提供了agentId，则查询对应的代理用户
+        User agent = null;
+        if (orderCreateDTO.getAgentId() != null) {
+            agent = userService.findById(orderCreateDTO.getAgentId())
+                    .orElseThrow(() -> new BusinessException("指定的代理不存在"));
+            
+            // 检查用户是否是代理角色
+            boolean isAgent = agent.getRoles().stream()
+                    .anyMatch(role -> role.getName().equals("ROLE_AGENT"));
+            
+            if (!isAgent) {
+                throw new BusinessException("指定的用户不是代理角色");
+            }
+            
+            if (!agent.getEnabled()) {
+                throw new BusinessException("指定的代理已被禁用");
+            }
+        }
+        
         // 创建订单
         Order order = Order.builder()
                 .product(product)
@@ -80,6 +101,7 @@ public class OrderServiceImpl implements OrderService {
                 .status(OrderStatus.PENDING_AGENT_REVIEW)
                 .orderNo(orderUtils.generateOrderNo())
                 .accessToken(orderUtils.generateAccessToken())
+                .agent(agent) // 设置代理，如果没有指定则为null
                 .fields(new ArrayList<>())
                 .logs(new ArrayList<>())
                 .build();
@@ -109,7 +131,7 @@ public class OrderServiceImpl implements OrderService {
                 .operatorName("客户")
                 .fromStatus(null)
                 .toStatus(OrderStatus.PENDING_AGENT_REVIEW)
-                .remark("订单创建")
+                .remark("订单创建" + (agent != null ? "，指定代理：" + agent.getUsername() : ""))
                 .build();
         
         orderLogRepository.save(orderLog);

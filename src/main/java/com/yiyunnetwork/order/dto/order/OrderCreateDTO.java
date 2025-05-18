@@ -28,6 +28,11 @@ public class OrderCreateDTO {
     private String customerPhone;
     
     /**
+     * 指定的代理ID，可选
+     */
+    private Long agentId;
+    
+    /**
      * 订单字段值，以key-value形式存储
      * key为字段标识，value为字段值
      */
